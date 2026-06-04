@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HEJS.DK — Behov & Pris Konfigurator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --navy: #1f2c47;
+    --navy-deep: #18223a;
+    --navy-soft: #2a3a5c;
+    --orange: #f08328;
+    --orange-deep: #d96e15;
+    --bg: #eef2f6;
+    --bg-tint: #f6f8fb;
+    --line: #d9dfe7;
+    --line-soft: #e6ebf1;
+    --text: #1f2c47;
+    --muted: #6b7587;
+    --white: #ffffff;
+    --shadow: 0 12px 32px rgba(31, 44, 71, 0.10);
+    --shadow-sm: 0 4px 14px rgba(31, 44, 71, 0.08);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', system-ui, -apple-system, Arial, sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, .display, .btn { font-family: 'Barlow Condensed', 'Inter', sans-serif; letter-spacing: 0.02em; }
+
+  /* ============ HEADER ============ */
+  .site-header {
+    background: var(--navy);
+    color: var(--white);
+    border-bottom: 4px solid var(--orange);
+  }
+  .header-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 18px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .logo { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+  .logo-mark {
+    width: 56px;
+    height: 56px;
+    background: var(--navy-deep);
+    border: 2px solid var(--white);
+    transform: skew(-12deg);
+    display: grid;
+    place-items: center;
+    box-shadow: 4px 4px 0 var(--orange);
+  }
+  .logo-mark span {
+    transform: skew(12deg);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 24px;
+    color: var(--white);
+    letter-spacing: 1px;
+  }
+  .logo-text { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 26px; color: var(--white); letter-spacing: 2px; }
+  .logo-text em { font-style: normal; color: var(--orange); }
+
+  .header-nav { display: flex; gap: 28px; align-items: center; }
+  .header-nav a {
+    color: var(--white);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    opacity: 0.85;
+    transition: opacity 0.15s;
+  }
+  .header-nav a:hover { opacity: 1; color: var(--orange); }
+  .header-cta {
+    background: var(--orange);
+    color: var(--white) !important;
+    padding: 10px 18px;
+    opacity: 1 !important;
+  }
+  .header-cta:hover { background: var(--orange-deep); color: var(--white) !important; }
+
+  /* ============ HERO ============ */
+  .hero {
+    background: var(--white);
+    padding: 56px 28px 32px;
+    text-align: center;
+    border-bottom: 1px solid var(--line);
+  }
+  .hero-inner { max-width: 880px; margin: 0 auto; }
+  .eyebrow {
+    display: inline-block;
+    background: var(--orange);
+    color: var(--white);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    padding: 7px 14px;
+    margin-bottom: 18px;
+  }
+  .hero h1 {
+    margin: 0 0 14px;
+    font-size: clamp(34px, 5vw, 54px);
+    font-weight: 800;
+    text-transform: uppercase;
+    line-height: 1.05;
+    color: var(--navy);
+  }
+  .hero h1 em { font-style: normal; color: var(--orange); }
+  .hero p { margin: 0 auto; max-width: 640px; color: var(--muted); font-size: 17px; }
+  .hero-divider {
+    width: 70px;
+    height: 4px;
+    background: var(--orange);
+    margin: 22px auto 0;
+  }
+
+  /* ============ MAIN LAYOUT ============ */
+  .configurator {
+    max-width: 1280px;
+    margin: -8px auto 64px;
+    padding: 0 28px;
+  }
+  .split {
+    display: grid;
+    grid-template-columns: 1fr 440px;
+    gap: 28px;
+    align-items: start;
+  }
+
+  /* ============ WIZARD (LEFT) ============ */
+  .wizard {
+    background: var(--white);
+    padding: 36px 40px 40px;
+    box-shadow: var(--shadow);
+    min-height: 620px;
+    position: relative;
+  }
+
+  .stepper { display: flex; gap: 8px; margin-bottom: 28px; }
+  .stepper .pip {
+    flex: 1;
+    height: 4px;
+    background: var(--line);
+    transition: background 0.3s ease;
+  }
+  .stepper .pip.done { background: var(--orange); }
+  .stepper .pip.active { background: var(--navy); }
+
+  .step-meta {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 8px;
+  }
+  .wizard h2 {
+    margin: 0 0 14px;
+    font-size: clamp(28px, 3.5vw, 38px);
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--navy);
+    line-height: 1.1;
+  }
+  .title-divider {
+    width: 56px;
+    height: 3px;
+    background: var(--orange);
+    margin-bottom: 24px;
+  }
+  .step-help {
+    color: var(--muted);
+    font-size: 15px;
+    margin: 0 0 28px;
+  }
+
+  /* Slider step */
+  .slider-wrap {
+    background: var(--bg-tint);
+    padding: 28px;
+    border: 1px solid var(--line-soft);
+    margin-bottom: 24px;
+  }
+  .slider-value {
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .slider-value .num {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 72px;
+    font-weight: 800;
+    color: var(--navy);
+    line-height: 1;
+  }
+  .slider-value .unit {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--orange);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    display: block;
+    margin-top: 4px;
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    background: var(--line);
+    outline: none;
+    margin: 18px 0 10px;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 26px;
+    height: 26px;
+    background: var(--orange);
+    border: 3px solid var(--white);
+    box-shadow: 0 2px 8px rgba(31, 44, 71, 0.3);
+    cursor: pointer;
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 26px;
+    height: 26px;
+    background: var(--orange);
+    border: 3px solid var(--white);
+    box-shadow: 0 2px 8px rgba(31, 44, 71, 0.3);
+    cursor: pointer;
+  }
+  .range-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 600;
+  }
+
+  /* Option cards */
+  .options { display: grid; gap: 14px; }
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 20px 22px;
+    background: var(--white);
+    border: 2px solid var(--line);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+  }
+  .option:hover {
+    border-color: var(--orange);
+    transform: translateX(4px);
+    box-shadow: var(--shadow-sm);
+  }
+  .option.selected {
+    border-color: var(--orange);
+    background: #fff7ef;
+    box-shadow: var(--shadow-sm);
+  }
+  .option .icon {
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+    background: var(--orange);
+    color: var(--white);
+    display: grid;
+    place-items: center;
+    transition: background 0.2s;
+  }
+  .option.selected .icon { background: var(--navy); }
+  .option .icon svg { width: 28px; height: 28px; }
+  .option .text { flex: 1; }
+  .option .title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 18px;
+    color: var(--navy);
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+  }
+  .option .desc { font-size: 14px; color: var(--muted); }
+  .option .chevron {
+    width: 22px;
+    height: 22px;
+    color: var(--line);
+    transition: color 0.2s;
+  }
+  .option.selected .chevron { color: var(--orange); }
+
+  /* Wizard nav */
+  .wizard-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-top: 36px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line-soft);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 24px;
+    border: 0;
+    background: var(--navy);
+    color: var(--white);
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: background 0.18s, transform 0.18s;
+    text-decoration: none;
+  }
+  .btn:hover { background: var(--navy-deep); }
+  .btn:disabled { background: var(--line); color: var(--muted); cursor: not-allowed; }
+  .btn-orange { background: var(--orange); }
+  .btn-orange:hover { background: var(--orange-deep); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--navy);
+    border: 2px solid var(--navy);
+    padding: 12px 22px;
+  }
+  .btn-ghost:hover { background: var(--navy); color: var(--white); }
+  .btn-arrow { font-size: 20px; line-height: 1; }
+
+  /* ============ SUMMARY (RIGHT) ============ */
+  .summary {
+    position: sticky;
+    top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .panel {
+    background: var(--white);
+    box-shadow: var(--shadow);
+  }
+  .panel-header {
+    background: var(--navy);
+    color: var(--white);
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .panel-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+  .panel-header .dot {
+    width: 10px;
+    height: 10px;
+    background: var(--orange);
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .summary-body { padding: 22px 24px; }
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line-soft);
+    font-size: 14px;
+  }
+  .summary-row:last-child { border-bottom: 0; }
+  .summary-row .label { color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-size: 11px; font-weight: 600; }
+  .summary-row .value { color: var(--navy); font-weight: 600; text-align: right; }
+  .summary-row .value.empty { color: #c5cbd6; font-style: italic; font-weight: 400; }
+
+  .price-block {
+    background: var(--navy);
+    color: var(--white);
+    padding: 22px 24px;
+  }
+  .price-block .label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    color: var(--orange);
+    margin-bottom: 6px;
+  }
+  .price-block .price {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 42px;
+    font-weight: 800;
+    line-height: 1;
+  }
+  .price-block .price small { font-size: 18px; opacity: 0.7; font-weight: 600; }
+  .price-block .sub {
+    font-size: 13px;
+    margin-top: 8px;
+    opacity: 0.75;
+  }
+  .price-block .divider-line {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.15);
+    margin: 16px 0;
+  }
+
+  /* Educational box */
+  .edu-box {
+    background: var(--white);
+    border-left: 4px solid var(--orange);
+    box-shadow: var(--shadow);
+    padding: 22px 24px;
+    transition: all 0.35s ease;
+  }
+  .edu-box .edu-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--orange);
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  .edu-box .edu-title svg { width: 22px; height: 22px; }
+  .edu-box .edu-text {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .edu-box.alert {
+    border-left-color: #e74c3c;
+    background: #fff4f3;
+  }
+  .edu-box.alert .edu-title { color: #c0392b; }
+
+  /* ============ RESULT ============ */
+  .result { display: none; }
+  .result.show { display: block; animation: fadeIn 0.5s ease; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .result-hero {
+    background: var(--navy);
+    color: var(--white);
+    padding: 40px 40px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .result-hero::before {
+    content: '';
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    width: 200px;
+    height: 200px;
+    background: var(--orange);
+    opacity: 0.12;
+    transform: rotate(45deg);
+  }
+  .result-hero .eyebrow { background: var(--orange); }
+  .result-hero h2 {
+    font-size: 44px;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin: 12px 0 6px;
+    line-height: 1.05;
+    color: var(--white);
+  }
+  .result-hero p { margin: 0; opacity: 0.85; }
+
+  .result-body { padding: 36px 40px; background: var(--white); }
+  .price-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 26px; }
+  .price-card {
+    background: var(--bg-tint);
+    border-top: 4px solid var(--orange);
+    padding: 24px;
+  }
+  .price-card .label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .price-card .amount {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 38px;
+    font-weight: 800;
+    color: var(--navy);
+    line-height: 1.1;
+  }
+  .price-card .amount small { font-size: 18px; color: var(--muted); font-weight: 600; }
+  .price-card .note { font-size: 12px; color: var(--muted); margin-top: 8px; line-height: 1.5; }
+
+  .savings-banner {
+    background: linear-gradient(135deg, var(--orange) 0%, var(--orange-deep) 100%);
+    color: var(--white);
+    padding: 22px 26px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 28px;
+  }
+  .savings-banner .icon-circle {
+    width: 56px;
+    height: 56px;
+    background: rgba(255, 255, 255, 0.18);
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+  }
+  .savings-banner .icon-circle svg { width: 30px; height: 30px; }
+  .savings-banner .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 700;
+    opacity: 0.9;
+  }
+  .savings-banner .amount {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1.1;
+  }
+
+  .breakdown-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--orange);
+    margin: 0 0 6px;
+  }
+  .breakdown h3 {
+    font-size: 24px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--navy);
+    margin: 0 0 12px;
+  }
+  .breakdown { margin-bottom: 28px; }
+  .breakdown ul { list-style: none; padding: 0; margin: 0; }
+  .breakdown li {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--line-soft);
+    font-size: 14px;
+  }
+  .breakdown li:last-child { border-bottom: 0; }
+  .breakdown li .l { color: var(--muted); }
+  .breakdown li .r { color: var(--navy); font-weight: 600; }
+
+  .cta-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .cta-row .btn { width: 100%; justify-content: center; padding: 18px 16px; font-size: 13px; }
+
+  .result-back {
+    background: var(--bg-tint);
+    padding: 16px 40px;
+    text-align: center;
+    border-top: 1px solid var(--line);
+  }
+  .result-back a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 600;
+  }
+  .result-back a:hover { color: var(--orange); }
+
+  /* ============ MODAL ============ */
+  .modal-bg {
+    position: fixed;
+    inset: 0;
+    background: rgba(24, 34, 58, 0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+  }
+  .modal-bg.show { display: flex; animation: fadeIn 0.25s ease; }
+  .modal {
+    background: var(--white);
+    width: 100%;
+    max-width: 460px;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.35);
+  }
+  .modal-head {
+    background: var(--navy);
+    color: var(--white);
+    padding: 22px 26px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .modal-head h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+  .modal-close {
+    background: transparent;
+    color: var(--white);
+    border: 0;
+    font-size: 24px;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+  }
+  .modal-body { padding: 26px; }
+  .modal-body p { margin: 0 0 18px; color: var(--muted); font-size: 14px; }
+  .field { margin-bottom: 14px; }
+  .field label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+  .field input {
+    width: 100%;
+    padding: 13px 14px;
+    border: 2px solid var(--line);
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .field input:focus { border-color: var(--orange); }
+  .modal .btn { width: 100%; justify-content: center; margin-top: 8px; }
+  .modal-success {
+    text-align: center;
+    padding: 40px 26px;
+  }
+  .modal-success svg {
+    width: 64px;
+    height: 64px;
+    color: var(--orange);
+    margin-bottom: 12px;
+  }
+  .modal-success h4 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--navy);
+    margin: 0 0 8px;
+  }
+  .modal-success p { color: var(--muted); margin: 0; }
+
+  /* ============ FOOTER ============ */
+  .site-footer {
+    background: var(--navy-deep);
+    color: rgba(255, 255, 255, 0.7);
+    padding: 26px 28px;
+    text-align: center;
+    font-size: 13px;
+  }
+  .site-footer strong { color: var(--white); }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 1024px) {
+    .split { grid-template-columns: 1fr; }
+    .summary { position: static; }
+    .wizard { padding: 28px 24px; min-height: 0; }
+    .price-cards, .cta-row { grid-template-columns: 1fr; }
+    .result-hero, .result-body { padding: 28px 24px; }
+    .header-nav { display: none; }
+  }
+  @media (max-width: 560px) {
+    .hero { padding: 36px 20px 24px; }
+    .configurator { padding: 0 16px; }
+    .wizard { padding: 24px 18px; }
+    .summary-body, .price-block, .edu-box { padding: 18px 18px; }
+    .option { padding: 16px; gap: 14px; }
+    .option .icon { width: 44px; height: 44px; }
+    .option .icon svg { width: 22px; height: 22px; }
+    .header-inner { padding: 14px 18px; }
+    .logo-text { font-size: 22px; }
+    .logo-mark { width: 46px; height: 46px; }
+    .logo-mark span { font-size: 20px; }
+    .wizard-nav { flex-direction: column-reverse; }
+    .wizard-nav .btn { width: 100%; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="#" class="logo" aria-label="HEJS.DK">
+      <div class="logo-mark"><span>H</span></div>
+      <div class="logo-text">HEJS<em>.DK</em></div>
+    </a>
+    <nav class="header-nav">
+      <a href="#">Forside</a>
+      <a href="#">Produkter</a>
+      <a href="#">Om os</a>
+      <a href="#">Kontakt</a>
+      <a href="#" class="header-cta">Ring nu</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <span class="eyebrow">B2B Konfigurator</span>
+    <h1>Find den rette <em>byggehejs</em> til jeres projekt</h1>
+    <p>Få et skræddersyet estimat på under 60 sekunder. Vi spørger ind til projektets fysiske rammer, transportbehov og tidsplan — og leverer en konkret prisindikation samt en anbefalet løsning.</p>
+    <div class="hero-divider"></div>
+  </div>
+</section>
+
+<main class="configurator" id="configurator">
+  <!-- WIZARD VIEW -->
+  <div class="split" id="wizardView">
+    <!-- LEFT: Wizard -->
+    <div class="wizard">
+      <div class="stepper" id="stepper">
+        <div class="pip active"></div>
+        <div class="pip"></div>
+        <div class="pip"></div>
+        <div class="pip"></div>
+      </div>
+
+      <!-- STEP 1 -->
+      <div class="step" data-step="1">
+        <div class="step-meta">Trin 1 af 4 — Fysiske rammer</div>
+        <h2>Hvor højt skal der løftes?</h2>
+        <div class="title-divider"></div>
+        <p class="step-help">Angiv den maksimale løftehøjde, hejsen skal håndtere på byggepladsen.</p>
+
+        <div class="slider-wrap">
+          <div class="slider-value">
+            <div class="num" id="heightValue">12</div>
+            <span class="unit">Meter</span>
+          </div>
+          <input type="range" id="heightSlider" min="0" max="50" value="12" step="1" />
+          <div class="range-labels">
+            <span>0 m</span>
+            <span>25 m</span>
+            <span>50 m</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="step" data-step="2" style="display:none">
+        <div class="step-meta">Trin 2 af 4 — Transportbehov</div>
+        <h2>Hvad skal transporteres?</h2>
+        <div class="title-divider"></div>
+        <p class="step-help">Vælg den primære opgave — det afgør hejsens kapacitet og kabinetype.</p>
+
+        <div class="options" id="cargoOptions">
+          <button class="option" data-value="materials" data-cost="0" data-label="Kun materialer">
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/><path d="M3 17l9 4 9-4"/></svg></div>
+            <div class="text">
+              <div class="title">Kun materialer</div>
+              <div class="desc">Værktøj, mindre komponenter, byggeudstyr</div>
+            </div>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+          <button class="option" data-value="people" data-cost="4000" data-label="Personer & standardmaterialer">
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="3"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><circle cx="17" cy="8" r="2.5"/><path d="M21 21v-1.5a3 3 0 0 0-2.5-3"/></svg></div>
+            <div class="text">
+              <div class="title">Både personer og standardmaterialer</div>
+              <div class="desc">Håndværkere op/ned + materialer på paller</div>
+            </div>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+          <button class="option" data-value="heavy" data-cost="8000" data-label="Store/tunge elementer">
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="1"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/></svg></div>
+            <div class="text">
+              <div class="title">Store/tunge elementer</div>
+              <div class="desc">Gipsplader, vinduespartier, isoleringsruller</div>
+            </div>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="step" data-step="3" style="display:none">
+        <div class="step-meta">Trin 3 af 4 — Montage</div>
+        <h2>Hvordan ser montageforholdene ud?</h2>
+        <div class="title-divider"></div>
+        <p class="step-help">Facadetypen afgør forberedelsen og tiden til opstilling.</p>
+
+        <div class="options" id="mountOptions">
+          <button class="option" data-value="concrete" data-cost="0" data-label="Beton-/stålfacade">
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18"/><path d="M4 9h16M4 15h16M12 3v18"/></svg></div>
+            <div class="text">
+              <div class="title">Direkte på stabil beton- eller stålfacade</div>
+              <div class="desc">Standard montage — ingen tillæg</div>
+            </div>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+          <button class="option" data-value="scaffold" data-cost="3000" data-label="Montering på stillads">
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V5M9 21V5M15 21V5M21 21V5"/><path d="M3 9h18M3 13h18M3 17h18"/></svg></div>
+            <div class="text">
+              <div class="title">Montering på/igennem stillads</div>
+              <div class="desc">Kræver dialog med stilladsbygger</div>
+            </div>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+          <button class="option" data-value="challenging" data-cost="6000" data-label="Træ/glas/udfordrende">
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 22h20L12 2z"/><line x1="12" y1="9" x2="12" y2="15"/><circle cx="12" cy="18" r="0.5" fill="currentColor"/></svg></div>
+            <div class="text">
+              <div class="title">Træbyggeri / glasfacade / udfordrende adgang</div>
+              <div class="desc">Særlige beslag og forstærkninger</div>
+            </div>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 4 -->
+      <div class="step" data-step="4" style="display:none">
+        <div class="step-meta">Trin 4 af 4 — Tidsramme</div>
+        <h2>Hvor længe skal hejsen bruges?</h2>
+        <div class="title-divider"></div>
+        <p class="step-help">Længere lejeperioder udløser automatisk volumenrabat på den månedlige leje.</p>
+
+        <div class="slider-wrap">
+          <div class="slider-value">
+            <div class="num" id="monthsValue">3</div>
+            <span class="unit">Måneder</span>
+          </div>
+          <input type="range" id="monthsSlider" min="1" max="12" value="3" step="1" />
+          <div class="range-labels">
+            <span>1 md</span>
+            <span>6 md</span>
+            <span>12 md</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- NAV -->
+      <div class="wizard-nav">
+        <button class="btn btn-ghost" id="prevBtn" disabled>
+          <span class="btn-arrow">←</span> Tilbage
+        </button>
+        <button class="btn btn-orange" id="nextBtn">
+          Næste <span class="btn-arrow">→</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- RIGHT: Summary -->
+    <aside class="summary">
+      <div class="panel">
+        <div class="panel-header">
+          <h3>Live opsummering</h3>
+          <span class="dot"></span>
+        </div>
+        <div class="summary-body" id="summaryBody">
+          <div class="summary-row">
+            <span class="label">Løftehøjde</span>
+            <span class="value" id="sumHeight">12 m</span>
+          </div>
+          <div class="summary-row">
+            <span class="label">Transport</span>
+            <span class="value empty" id="sumCargo">Ikke valgt</span>
+          </div>
+          <div class="summary-row">
+            <span class="label">Montage</span>
+            <span class="value empty" id="sumMount">Ikke valgt</span>
+          </div>
+          <div class="summary-row">
+            <span class="label">Lejeperiode</span>
+            <span class="value empty" id="sumMonths">Ikke valgt</span>
+          </div>
+        </div>
+        <div class="price-block">
+          <div class="label">Estimeret etablering</div>
+          <div class="price" id="setupPrice">14.800<small> kr.</small></div>
+          <div class="divider-line"></div>
+          <div class="label">Estimeret månedlig leje</div>
+          <div class="price" id="monthlyPrice">— <small>kr./md.</small></div>
+          <div class="sub" id="discountNote"></div>
+        </div>
+      </div>
+
+      <div class="edu-box" id="eduBox">
+        <div class="edu-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          Vidste du at...?
+        </div>
+        <div class="edu-text" id="eduText">
+          Ved bygninger op til 4 etager kan en mindre materialehejs ofte gøre arbejdet. Men husk: Hvis dine håndværkere skal gå op og ned med værktøj, taber de i gennemsnit 15–20% effektivitet om dagen på ren trappegang.
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- RESULT VIEW -->
+  <div class="result panel" id="resultView">
+    <div class="result-hero">
+      <span class="eyebrow">Jeres anbefaling</span>
+      <h2 id="recommendedSolution">Standard Person-/Materialehejs</h2>
+      <p id="recommendedSub">Baseret på jeres input — klar til montage på pladsen.</p>
+    </div>
+    <div class="result-body">
+      <div class="price-cards">
+        <div class="price-card">
+          <div class="label">Etablering & montage (engangsudgift)</div>
+          <div class="amount" id="resSetup">14.800<small> kr.</small></div>
+          <div class="note">Inkluderer levering, montering, lovpligtigt belastningsprøvning og nedtagning.</div>
+        </div>
+        <div class="price-card">
+          <div class="label">Månedlig leje</div>
+          <div class="amount" id="resMonthly">12.000<small> kr./md.</small></div>
+          <div class="note" id="resMonthlyNote">Inkl. service, fjernovervågning og 24/7 teknisk support.</div>
+        </div>
+      </div>
+
+      <div class="savings-banner">
+        <div class="icon-circle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+        </div>
+        <div>
+          <div class="label">Jeres estimerede besparelse på pladsen</div>
+          <div class="amount">Ca. 35.000 kr./md. i sparede mandetimer og øget effektivitet</div>
+        </div>
+      </div>
+
+      <div class="breakdown">
+        <div class="breakdown-title">Detaljer</div>
+        <h3>Sådan er prisen beregnet</h3>
+        <ul id="breakdownList"></ul>
+      </div>
+
+      <div class="cta-row">
+        <button class="btn btn-orange" id="leadBtn">Lås denne pris &amp; få datablad på mail</button>
+        <button class="btn btn-ghost" id="bookBtn">Book gratis 15-minutters pladstjek</button>
+      </div>
+    </div>
+    <div class="result-back">
+      <a href="#" id="backToWizard">← Tilbage og juster valg</a>
+    </div>
+  </div>
+</main>
+
+<!-- LEAD MODAL -->
+<div class="modal-bg" id="leadModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Få datablad på mail</h3>
+      <button class="modal-close" id="leadClose" aria-label="Luk">×</button>
+    </div>
+    <div class="modal-body" id="leadModalBody">
+      <p>Vi sender et komplet datablad samt jeres låste prisindikation til den oplyste mail. Ingen forpligtelser.</p>
+      <form id="leadForm">
+        <div class="field">
+          <label for="leadName">Navn</label>
+          <input type="text" id="leadName" required placeholder="Fornavn Efternavn" />
+        </div>
+        <div class="field">
+          <label for="leadEmail">E-mail</label>
+          <input type="email" id="leadEmail" required placeholder="navn@firma.dk" />
+        </div>
+        <div class="field">
+          <label for="leadPhone">Telefon</label>
+          <input type="tel" id="leadPhone" required placeholder="+45 12 34 56 78" />
+        </div>
+        <button type="submit" class="btn btn-orange">Send mig databladet →</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- BOOK MODAL -->
+<div class="modal-bg" id="bookModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Book gratis pladstjek</h3>
+      <button class="modal-close" id="bookClose" aria-label="Luk">×</button>
+    </div>
+    <div class="modal-body" id="bookModalBody">
+      <p>En af vores teknikere ringer inden for 24 timer for at booke et 15-minutters online pladstjek. Vi ser på facaden, tjekker mål og afklarer logistik.</p>
+      <form id="bookForm">
+        <div class="field">
+          <label for="bookName">Navn</label>
+          <input type="text" id="bookName" required placeholder="Fornavn Efternavn" />
+        </div>
+        <div class="field">
+          <label for="bookPhone">Telefon</label>
+          <input type="tel" id="bookPhone" required placeholder="+45 12 34 56 78" />
+        </div>
+        <div class="field">
+          <label for="bookProject">Adresse på byggeplads</label>
+          <input type="text" id="bookProject" required placeholder="Vejnavn 1, 1234 By" />
+        </div>
+        <button type="submit" class="btn">Book pladstjek →</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <strong>HEJS.DK</strong> &nbsp;·&nbsp; Person- &amp; materialehejs til byggepladser i hele Danmark &nbsp;·&nbsp; CVR 12345678 &nbsp;·&nbsp; +45 70 00 00 00
+</footer>
+
+<script>
+  // ============ STATE ============
+  const state = {
+    step: 1,
+    height: 12,
+    cargo: null,       // {value, cost, label}
+    mount: null,       // {value, cost, label}
+    months: null,      // number (set when user enters step 4)
+  };
+
+  const fmt = n => Math.round(n).toLocaleString('da-DK');
+
+  // ============ ELEMENTS ============
+  const stepper = document.getElementById('stepper');
+  const steps = document.querySelectorAll('.step');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+
+  const heightSlider = document.getElementById('heightSlider');
+  const heightValue = document.getElementById('heightValue');
+  const monthsSlider = document.getElementById('monthsSlider');
+  const monthsValue = document.getElementById('monthsValue');
+
+  const sumHeight = document.getElementById('sumHeight');
+  const sumCargo = document.getElementById('sumCargo');
+  const sumMount = document.getElementById('sumMount');
+  const sumMonths = document.getElementById('sumMonths');
+  const setupPriceEl = document.getElementById('setupPrice');
+  const monthlyPriceEl = document.getElementById('monthlyPrice');
+  const discountNote = document.getElementById('discountNote');
+
+  const eduBox = document.getElementById('eduBox');
+  const eduText = document.getElementById('eduText');
+
+  // ============ PRICE LOGIC ============
+  const BASE_MONTHLY = 8000; // baseline monthly rent before cargo add-on
+
+  function calcSetup() {
+    let setup = 10000 + (state.height * 400);
+    if (state.mount) setup += state.mount.cost;
+    return setup;
+  }
+
+  function calcMonthly() {
+    let monthly = BASE_MONTHLY + (state.cargo ? state.cargo.cost : 0);
+    let discount = 0;
+    if (state.months) {
+      if (state.months >= 7) discount = 0.20;
+      else if (state.months >= 4) discount = 0.10;
+    }
+    return { monthly: monthly * (1 - discount), discount };
+  }
+
+  function updatePrices() {
+    setupPriceEl.innerHTML = `${fmt(calcSetup())}<small> kr.</small>`;
+    if (state.cargo) {
+      const { monthly, discount } = calcMonthly();
+      monthlyPriceEl.innerHTML = `${fmt(monthly)}<small> kr./md.</small>`;
+      discountNote.textContent = discount > 0
+        ? `Volumenrabat: –${Math.round(discount * 100)}% (${state.months} mdr.)`
+        : '';
+    } else {
+      monthlyPriceEl.innerHTML = `— <small>kr./md.</small>`;
+      discountNote.textContent = '';
+    }
+  }
+
+  // ============ EDUCATIONAL BOX ============
+  function updateEdu() {
+    eduBox.classList.remove('alert');
+    let title = 'Vidste du at...?';
+    let text = '';
+
+    if (state.step === 1) {
+      if (state.height < 15) {
+        text = 'Ved bygninger op til 4 etager kan en mindre materialehejs ofte gøre arbejdet. Men husk: Hvis dine håndværkere skal gå op og ned med værktøj, taber de i gennemsnit 15–20% effektivitet om dagen på ren trappegang.';
+      } else {
+        text = 'Arbejdstilsynet kigger nøje på tunge løft og trappegang ved bygninger over 3–4 etager. Her er en person-/materialehejs ofte en nødvendighed for at overholde arbejdsmiljøloven og undgå bøder.';
+        eduBox.classList.add('alert');
+        title = 'Vigtigt at vide';
+      }
+    } else if (state.step === 2) {
+      if (state.cargo && state.cargo.value === 'heavy') {
+        text = 'Skal I flytte gipsplader? Standard gipsplader (1,2 × 2,4 m) kræver en kabinebredde på minimum 1,4 m. Vælger du en for lille hejs, skal pladerne vendes manuelt på hver etage, hvilket spilder tid og øger risikoen for skader.';
+        eduBox.classList.add('alert');
+        title = 'OBS — Kabinedimensioner';
+      } else if (state.cargo && state.cargo.value === 'people') {
+        text = 'En kombineret person-/materialehejs kræver lovpligtigt eftersyn hver 3. måned. Vi inkluderer alle eftersyn i den månedlige leje, så I aldrig får uventede regninger.';
+      } else if (state.cargo && state.cargo.value === 'materials') {
+        text = 'En ren materialehejs er ofte den mest cost-effektive løsning — men hvis I har mere end 8 håndværkere på pladsen, tjener en person-/materialehejs sig hjem på under 2 måneder på sparede mandetimer.';
+      } else {
+        text = 'Vælg det primære behov. Hejsens kapacitet og kabinetype tilpasses, så I hverken betaler for meget eller løber tør for kapacitet midt i projektet.';
+      }
+    } else if (state.step === 3) {
+      if (state.mount && state.mount.value === 'scaffold') {
+        text = 'Montering på stillads kræver tæt dialog med jeres stilladsbygger, da stilladset skal kunne holde til hejsens kræfter. Vi koordinerer gerne dette, så I slipper for ekstraregninger.';
+      } else if (state.mount && state.mount.value === 'challenging') {
+        text = 'Træbyggeri og glasfacader kræver specielle ankerpunkter og ofte interne forstærkninger. Vi sender altid en tekniker forbi inden montage — det er gratis og sparer typisk 8–12 timers fejlmontage.';
+        eduBox.classList.add('alert');
+        title = 'OBS — Teknisk forberedelse';
+      } else if (state.mount && state.mount.value === 'concrete') {
+        text = 'Beton- og stålfacader er den enkleste og mest sikre løsning. Vi kan typisk være færdige med montagen på 4–6 timer fra ankomst.';
+      } else {
+        text = 'Facadetypen afgør valg af beslag, ankerpunkter og forberedelsestid. Vælg så vi kan give jer en præcis pris.';
+      }
+    } else if (state.step === 4) {
+      text = 'Husk at indregne 1–2 uger i buffertid til slut. Hvis hejsen pilles ned for tidligt, stopper indretningen af de øverste etager fuldstændigt op, hvilket skaber dyre flaskehalse.';
+      if (state.months >= 7) {
+        text += ' Med jeres lejeperiode opnår I automatisk 20% volumenrabat.';
+      } else if (state.months >= 4) {
+        text += ' Med jeres lejeperiode opnår I automatisk 10% volumenrabat.';
+      }
+    }
+
+    // fade transition
+    eduBox.style.opacity = '0';
+    setTimeout(() => {
+      eduBox.querySelector('.edu-title').lastChild.textContent = ' ' + title;
+      eduText.textContent = text;
+      eduBox.style.opacity = '1';
+    }, 150);
+  }
+
+  // ============ SUMMARY ============
+  function updateSummary() {
+    sumHeight.textContent = `${state.height} m`;
+    sumHeight.classList.remove('empty');
+
+    if (state.cargo) {
+      sumCargo.textContent = state.cargo.label;
+      sumCargo.classList.remove('empty');
+    } else {
+      sumCargo.textContent = 'Ikke valgt';
+      sumCargo.classList.add('empty');
+    }
+
+    if (state.mount) {
+      sumMount.textContent = state.mount.label;
+      sumMount.classList.remove('empty');
+    } else {
+      sumMount.textContent = 'Ikke valgt';
+      sumMount.classList.add('empty');
+    }
+
+    if (state.months) {
+      sumMonths.textContent = `${state.months} mdr.`;
+      sumMonths.classList.remove('empty');
+    } else {
+      sumMonths.textContent = 'Ikke valgt';
+      sumMonths.classList.add('empty');
+    }
+
+    updatePrices();
+  }
+
+  // ============ STEP NAV ============
+  function showStep(n) {
+    steps.forEach(s => s.style.display = (parseInt(s.dataset.step) === n) ? 'block' : 'none');
+
+    // stepper
+    [...stepper.children].forEach((pip, i) => {
+      pip.classList.remove('active', 'done');
+      if (i + 1 < n) pip.classList.add('done');
+      if (i + 1 === n) pip.classList.add('active');
+    });
+
+    prevBtn.disabled = (n === 1);
+    nextBtn.innerHTML = (n === 4) ? 'Se mit estimat <span class="btn-arrow">→</span>' : 'Næste <span class="btn-arrow">→</span>';
+    nextBtn.classList.toggle('btn-orange', true);
+
+    // ensure step-specific defaults
+    if (n === 4 && state.months === null) {
+      state.months = parseInt(monthsSlider.value);
+    }
+
+    state.step = n;
+    updateSummary();
+    updateEdu();
+    canProceed();
+  }
+
+  function canProceed() {
+    let ok = true;
+    if (state.step === 2 && !state.cargo) ok = false;
+    if (state.step === 3 && !state.mount) ok = false;
+    nextBtn.disabled = !ok;
+  }
+
+  prevBtn.addEventListener('click', () => { if (state.step > 1) showStep(state.step - 1); });
+  nextBtn.addEventListener('click', () => {
+    if (nextBtn.disabled) return;
+    if (state.step < 4) {
+      showStep(state.step + 1);
+    } else {
+      showResult();
+    }
+  });
+
+  // ============ INPUTS ============
+  heightSlider.addEventListener('input', e => {
+    state.height = parseInt(e.target.value);
+    heightValue.textContent = state.height;
+    updateSummary();
+    updateEdu();
+  });
+
+  monthsSlider.addEventListener('input', e => {
+    state.months = parseInt(e.target.value);
+    monthsValue.textContent = state.months;
+    updateSummary();
+    updateEdu();
+  });
+
+  document.querySelectorAll('#cargoOptions .option').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#cargoOptions .option').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      state.cargo = {
+        value: btn.dataset.value,
+        cost: parseInt(btn.dataset.cost),
+        label: btn.dataset.label,
+      };
+      updateSummary();
+      updateEdu();
+      canProceed();
+    });
+  });
+
+  document.querySelectorAll('#mountOptions .option').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#mountOptions .option').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      state.mount = {
+        value: btn.dataset.value,
+        cost: parseInt(btn.dataset.cost),
+        label: btn.dataset.label,
+      };
+      updateSummary();
+      updateEdu();
+      canProceed();
+    });
+  });
+
+  // ============ RESULT ============
+  function recommendedSolution() {
+    if (!state.cargo) return { name: 'Standard Materialehejs', sub: '' };
+    if (state.cargo.value === 'materials') {
+      return {
+        name: 'Materialehejs',
+        sub: 'En kompakt, robust hejs designet til værktøj og mindre komponenter — hurtig at montere og økonomisk i drift.'
+      };
+    }
+    if (state.cargo.value === 'people') {
+      return {
+        name: 'Standard Person-/Materialehejs',
+        sub: 'Vores mest populære model — kombinerer effektivt personløft med plads til pallevarer og standardmaterialer.'
+      };
+    }
+    return {
+      name: 'XL Højkapacitetshejs',
+      sub: 'Forstærket kabine med ekstra bredde til gipsplader, vinduespartier og tunge byggeelementer op til 2.000 kg.'
+    };
+  }
+
+  function showResult() {
+    document.getElementById('wizardView').style.display = 'none';
+    const r = document.getElementById('resultView');
+    r.classList.add('show');
+
+    const rec = recommendedSolution();
+    document.getElementById('recommendedSolution').textContent = rec.name;
+    document.getElementById('recommendedSub').textContent = rec.sub;
+
+    const setup = calcSetup();
+    const { monthly, discount } = calcMonthly();
+
+    document.getElementById('resSetup').innerHTML = `${fmt(setup)}<small> kr.</small>`;
+    document.getElementById('resMonthly').innerHTML = `${fmt(monthly)}<small> kr./md.</small>`;
+    document.getElementById('resMonthlyNote').textContent = discount > 0
+      ? `Inkluderer ${Math.round(discount * 100)}% volumenrabat på baggrund af ${state.months} måneders leje.`
+      : 'Inkl. service, fjernovervågning og 24/7 teknisk support.';
+
+    const list = document.getElementById('breakdownList');
+    list.innerHTML = '';
+    const rows = [
+      ['Grundpris (etablering)', '10.000 kr.'],
+      [`Løftehøjde (${state.height} m × 400 kr.)`, `${fmt(state.height * 400)} kr.`],
+      [`Montagetillæg (${state.mount.label})`, `${fmt(state.mount.cost)} kr.`],
+      ['— Etablering i alt', `${fmt(setup)} kr.`],
+      [`Månedlig baseleje`, `${fmt(BASE_MONTHLY)} kr./md.`],
+      [`Transporttillæg (${state.cargo.label})`, `${fmt(state.cargo.cost)} kr./md.`],
+    ];
+    if (discount > 0) rows.push([`Volumenrabat (${state.months} mdr.)`, `–${Math.round(discount * 100)}%`]);
+    rows.push(['— Månedlig leje i alt', `${fmt(monthly)} kr./md.`]);
+
+    rows.forEach(([l, r]) => {
+      const li = document.createElement('li');
+      li.innerHTML = `<span class="l">${l}</span><span class="r">${r}</span>`;
+      list.appendChild(li);
+    });
+
+    window.scrollTo({ top: document.getElementById('configurator').offsetTop - 20, behavior: 'smooth' });
+  }
+
+  document.getElementById('backToWizard').addEventListener('click', e => {
+    e.preventDefault();
+    document.getElementById('resultView').classList.remove('show');
+    document.getElementById('wizardView').style.display = 'grid';
+    window.scrollTo({ top: document.getElementById('configurator').offsetTop - 20, behavior: 'smooth' });
+  });
+
+  // ============ MODALS ============
+  function openModal(id) { document.getElementById(id).classList.add('show'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+  document.getElementById('leadBtn').addEventListener('click', () => openModal('leadModal'));
+  document.getElementById('bookBtn').addEventListener('click', () => openModal('bookModal'));
+  document.getElementById('leadClose').addEventListener('click', () => closeModal('leadModal'));
+  document.getElementById('bookClose').addEventListener('click', () => closeModal('bookModal'));
+
+  document.querySelectorAll('.modal-bg').forEach(bg => {
+    bg.addEventListener('click', e => { if (e.target === bg) bg.classList.remove('show'); });
+  });
+
+  function successMarkup(headline, sub) {
+    return `
+      <div class="modal-success">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/>
+        </svg>
+        <h4>${headline}</h4>
+        <p>${sub}</p>
+      </div>`;
+  }
+
+  document.getElementById('leadForm').addEventListener('submit', e => {
+    e.preventDefault();
+    document.getElementById('leadModalBody').innerHTML = successMarkup(
+      'Tak! Tjek din indbakke',
+      'Vi har sendt databladet og din låste pris. Vi kontakter dig inden for 1 hverdag.'
+    );
+  });
+
+  document.getElementById('bookForm').addEventListener('submit', e => {
+    e.preventDefault();
+    document.getElementById('bookModalBody').innerHTML = successMarkup(
+      'Pladstjek booket',
+      'En tekniker ringer inden for 24 timer for at finde et tidspunkt.'
+    );
+  });
+
+  // ============ INIT ============
+  eduBox.style.transition = 'opacity 0.25s ease';
+  showStep(1);
+</script>
+</body>
+</html>
