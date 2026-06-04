@@ -55,7 +55,7 @@
   }
   .logo { display: flex; align-items: center; text-decoration: none; }
   .logo-svg {
-    height: 56px;
+    height: 64px;
     width: auto;
     display: block;
   }
@@ -535,7 +535,28 @@
     padding: 32px 28px;
     text-align: center;
     transition: all 0.35s ease;
+    border: 0;
+    font-family: inherit;
+    width: 100%;
+    display: block;
+    cursor: pointer;
+    position: relative;
   }
+  .edu-box:hover { background: var(--white); box-shadow: var(--shadow); }
+  .edu-box::after {
+    content: 'KLIK FOR DETALJER';
+    position: absolute;
+    bottom: 10px;
+    right: 14px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--orange);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .edu-box:hover::after { opacity: 1; }
   .edu-box .edu-icon {
     width: 44px;
     height: 44px;
@@ -742,6 +763,121 @@
   }
   .result-back a:hover { color: var(--orange); }
 
+  /* ============ EDU POPUP ============ */
+  .edu-popup-bg {
+    position: fixed;
+    inset: 0;
+    background: rgba(24, 34, 58, 0.55);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 900;
+    padding: 24px;
+    backdrop-filter: blur(3px);
+  }
+  .edu-popup-bg.show { display: flex; animation: fadeIn 0.25s ease; }
+  .edu-popup {
+    background: var(--white);
+    max-width: 520px;
+    width: 100%;
+    padding: 44px 40px 36px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 28px 60px rgba(0,0,0,0.35);
+    animation: popIn 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+  }
+  @keyframes popIn {
+    from { opacity: 0; transform: translateY(20px) scale(0.96); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .edu-popup::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--orange);
+  }
+  .edu-popup.alert::before { background: #c0392b; }
+  .edu-popup .edu-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 14px;
+    color: var(--orange);
+  }
+  .edu-popup .edu-icon svg { width: 100%; height: 100%; stroke-width: 1.6; }
+  .edu-popup.alert .edu-icon { color: #c0392b; }
+  .edu-popup .edu-eyebrow {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--orange);
+    margin-bottom: 4px;
+  }
+  .edu-popup.alert .edu-eyebrow { color: #c0392b; }
+  .edu-popup h4 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--navy);
+    margin: 0 0 14px;
+    letter-spacing: 1px;
+    line-height: 1.15;
+  }
+  .edu-popup .pop-divider {
+    width: 50px;
+    height: 2px;
+    background: var(--navy);
+    margin: 0 auto 18px;
+  }
+  .edu-popup .pop-text {
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.65;
+    margin: 0 0 26px;
+  }
+  .edu-popup .pop-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .edu-popup-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    border: 0;
+    color: var(--muted);
+    font-size: 24px;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: color 0.15s;
+  }
+  .edu-popup-close:hover { color: var(--navy); }
+
+  /* Price range range-info note */
+  .price-disclaimer {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 600;
+    margin-top: 14px;
+    line-height: 1.5;
+  }
+  .price-block .price-disclaimer {
+    color: rgba(255,255,255,0.55);
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 12px;
+    margin-top: 14px;
+  }
+
   /* ============ MODAL ============ */
   .modal-bg {
     position: fixed;
@@ -834,13 +970,129 @@
 
   /* ============ FOOTER ============ */
   .site-footer {
-    background: var(--navy-deep);
-    color: rgba(255, 255, 255, 0.7);
-    padding: 26px 28px;
-    text-align: center;
-    font-size: 13px;
+    background: #1b2746;
+    color: rgba(255, 255, 255, 0.75);
+    padding: 64px 32px 0;
+    font-size: 14px;
+    position: relative;
+    overflow: hidden;
   }
-  .site-footer strong { color: var(--white); }
+  .site-footer::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 200' preserveAspectRatio='none'><path d='M0 200 L0 140 L60 140 L60 90 L120 90 L120 130 L180 130 L180 70 L240 70 L240 110 L300 110 L300 80 L360 80 L360 140 L420 140 L420 100 L480 100 L480 60 L540 60 L540 120 L600 120 L600 90 L660 90 L660 130 L720 130 L720 70 L780 70 L780 110 L840 110 L840 80 L900 80 L900 140 L960 140 L960 100 L1020 100 L1020 150 L1080 150 L1080 90 L1140 90 L1140 130 L1200 130 L1200 200 Z' fill='%23111c36' opacity='0.5'/></svg>");
+    background-size: 100% 100%;
+    background-position: bottom center;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .footer-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.3fr 1fr 1fr 1.4fr;
+    gap: 48px;
+    position: relative;
+    z-index: 1;
+    padding-bottom: 56px;
+  }
+  .footer-col h4 {
+    font-family: 'Barlow Condensed', sans-serif;
+    color: var(--white);
+    font-size: 20px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    margin: 0 0 22px;
+  }
+  .footer-about .footer-logo {
+    margin-bottom: 22px;
+  }
+  .footer-about .footer-logo svg { height: 56px; width: auto; display: block; }
+  .footer-about p {
+    margin: 0 0 22px;
+    line-height: 1.65;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  .iso-badge {
+    background: var(--white);
+    width: 132px;
+    height: 132px;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    padding: 12px;
+  }
+  .iso-badge svg { width: 100%; height: 100%; }
+
+  .footer-links { list-style: none; padding: 0; margin: 0; }
+  .footer-links li { margin-bottom: 14px; }
+  .footer-links a {
+    color: rgba(255, 255, 255, 0.75);
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.15s;
+  }
+  .footer-links a:hover { color: var(--orange); }
+
+  .footer-phone {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+  .footer-phone .ph-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--orange);
+    color: var(--white);
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+  }
+  .footer-phone .ph-icon svg { width: 18px; height: 18px; }
+  .footer-phone a {
+    color: var(--orange);
+    text-decoration: none;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  .footer-contact p {
+    margin: 0 0 8px;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.8);
+  }
+  .footer-contact p strong { color: var(--white); font-weight: 600; }
+  .footer-contact .contact-block { margin-top: 18px; }
+  .footer-contact a { color: rgba(255,255,255,0.8); text-decoration: none; }
+  .footer-contact a:hover { color: var(--orange); }
+
+  .footer-bottom {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 22px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.55);
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  .footer-bottom a { color: rgba(255, 255, 255, 0.55); text-decoration: none; }
+  .footer-bottom a:hover { color: var(--orange); }
 
   /* ============ RESPONSIVE ============ */
   @media (max-width: 1100px) {
@@ -851,11 +1103,17 @@
     .result-hero, .result-body { padding: 36px 32px; }
     .header-nav { display: none; }
   }
+  @media (max-width: 900px) {
+    .footer-inner { grid-template-columns: 1fr 1fr; gap: 36px; }
+  }
   @media (max-width: 720px) {
     .options { grid-template-columns: 1fr; }
     .option .desc { min-height: 0; }
     .savings-banner { flex-direction: column; text-align: center; gap: 12px; }
     .header-socials { display: none; }
+    .footer-inner { grid-template-columns: 1fr; gap: 32px; padding-bottom: 36px; }
+    .site-footer { padding: 48px 24px 0; }
+    .footer-bottom { flex-direction: column; text-align: center; }
   }
   @media (max-width: 560px) {
     .hero { padding: 40px 20px 24px; }
@@ -878,15 +1136,27 @@
 <header class="site-header">
   <div class="header-inner">
     <a href="#" class="logo" aria-label="HEJS.DK">
-      <svg class="logo-svg" viewBox="0 0 240 80" xmlns="http://www.w3.org/2000/svg">
+      <svg class="logo-svg" viewBox="0 0 360 110" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <linearGradient id="lg" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#9aaad0"/>
-            <stop offset="100%" stop-color="#4b5e87"/>
+          <linearGradient id="logoFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#b8c3df"/>
+            <stop offset="55%" stop-color="#8896c1"/>
+            <stop offset="100%" stop-color="#5d6e9c"/>
           </linearGradient>
         </defs>
-        <g transform="skewX(-14)">
-          <text x="20" y="58" font-family="Barlow Condensed, Impact, sans-serif" font-weight="800" font-size="62" fill="url(#lg)" stroke="#243352" stroke-width="2.2" letter-spacing="2">HEJS.DK</text>
+        <!-- top banner / parallelogram that joins the H -->
+        <path d="M 4 38 L 76 8 L 122 8 L 60 38 Z"
+              fill="url(#logoFill)" stroke="#0e1a33" stroke-width="3.5" stroke-linejoin="round"/>
+        <path d="M 18 32 L 70 12 L 110 12 L 60 32 Z"
+              fill="none" stroke="#ffffff" stroke-width="1.2" opacity="0.75"/>
+        <!-- main HEJS.DK lettering, skewed forward -->
+        <g transform="skewX(-14) translate(20 0)" font-family="Impact, 'Barlow Condensed', Arial Black, sans-serif"
+           font-weight="900" font-size="92" letter-spacing="-1">
+          <!-- outer dark outline + gradient fill -->
+          <text x="20" y="92" fill="url(#logoFill)" stroke="#0e1a33" stroke-width="4"
+                paint-order="stroke fill">HEJS.DK</text>
+          <!-- inner white highlight stroke -->
+          <text x="20" y="92" fill="none" stroke="#ffffff" stroke-width="1.4" opacity="0.85">HEJS.DK</text>
         </g>
       </svg>
     </a>
@@ -1090,14 +1360,15 @@
         <h3>Prisindikation</h3>
         <div class="navy-divider"></div>
         <div class="label">Estimeret etablering</div>
-        <div class="price" id="setupPrice">14.800<small> kr.</small></div>
+        <div class="price" id="setupPrice">12.500 – 17.500<small> kr.</small></div>
         <div class="divider-line"></div>
         <div class="label">Estimeret månedlig leje</div>
         <div class="price" id="monthlyPrice">— <small>kr./md.</small></div>
         <div class="sub" id="discountNote"></div>
+        <div class="price-disclaimer">Endelig pris afhænger af lokation og pladsforhold</div>
       </div>
 
-      <div class="edu-box" id="eduBox">
+      <button type="button" class="edu-box" id="eduBox" title="Klik for at se hele indsigten">
         <div class="edu-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 0-4 12.7V17a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-2.3A7 7 0 0 0 12 2z"/><path d="M9 22h6"/></svg>
         </div>
@@ -1106,7 +1377,7 @@
         <div class="edu-text" id="eduText">
           Ved bygninger op til 4 etager kan en mindre materialehejs ofte gøre arbejdet. Men husk: Hvis dine håndværkere skal gå op og ned med værktøj, taber de i gennemsnit 15–20% effektivitet om dagen på ren trappegang.
         </div>
-      </div>
+      </button>
     </aside>
   </div>
 
@@ -1129,8 +1400,8 @@
           </div>
           <div class="label">Etablering &amp; montage</div>
           <div class="pc-divider"></div>
-          <div class="amount" id="resSetup">14.800<small> kr.</small></div>
-          <div class="note">Engangsudgift. Inkluderer levering, montering, lovpligtigt belastningsprøvning og nedtagning.</div>
+          <div class="amount" id="resSetup">12.500 – 17.500<small> kr.</small></div>
+          <div class="note">Engangsudgift. Inkluderer levering, montering, lovpligtigt belastningsprøvning og nedtagning. Endeligt tilbud afhænger af pladsforhold.</div>
         </div>
         <div class="price-card">
           <div class="pc-icon">
@@ -1138,8 +1409,8 @@
           </div>
           <div class="label">Månedlig leje</div>
           <div class="pc-divider"></div>
-          <div class="amount" id="resMonthly">12.000<small> kr./md.</small></div>
-          <div class="note" id="resMonthlyNote">Inkl. service, fjernovervågning og 24/7 teknisk support.</div>
+          <div class="amount" id="resMonthly">— <small>kr./md.</small></div>
+          <div class="note" id="resMonthlyNote">Inkl. service, fjernovervågning og 24/7 teknisk support. Prisrammen tilpasses efter lokation og tilkørselsforhold.</div>
         </div>
       </div>
 
@@ -1170,6 +1441,23 @@
     </div>
   </div>
 </main>
+
+<!-- EDU POPUP -->
+<div class="edu-popup-bg" id="eduPopupBg">
+  <div class="edu-popup" id="eduPopup">
+    <button type="button" class="edu-popup-close" id="eduPopupClose" aria-label="Luk">×</button>
+    <div class="edu-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 0-4 12.7V17a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-2.3A7 7 0 0 0 12 2z"/><path d="M9 22h6"/></svg>
+    </div>
+    <div class="edu-eyebrow" id="popEyebrow">Godt at vide</div>
+    <h4 id="popTitle">Vidste du at...?</h4>
+    <div class="pop-divider"></div>
+    <p class="pop-text" id="popText"></p>
+    <div class="pop-actions">
+      <button type="button" class="btn btn-orange" id="popContinue">Forstået — fortsæt</button>
+    </div>
+  </div>
+</div>
 
 <!-- LEAD MODAL -->
 <div class="modal-bg" id="leadModal">
@@ -1228,7 +1516,81 @@
 </div>
 
 <footer class="site-footer">
-  <strong>HEJS.DK</strong> &nbsp;·&nbsp; Person- &amp; materialehejs til byggepladser i hele Danmark &nbsp;·&nbsp; CVR 12345678 &nbsp;·&nbsp; +45 70 00 00 00
+  <div class="footer-inner">
+    <div class="footer-col footer-about">
+      <div class="footer-logo">
+        <svg viewBox="0 0 360 110" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="footerLogoFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#b8c3df"/>
+              <stop offset="55%" stop-color="#8896c1"/>
+              <stop offset="100%" stop-color="#5d6e9c"/>
+            </linearGradient>
+          </defs>
+          <path d="M 4 38 L 76 8 L 122 8 L 60 38 Z" fill="url(#footerLogoFill)" stroke="#0e1a33" stroke-width="3.5" stroke-linejoin="round"/>
+          <path d="M 18 32 L 70 12 L 110 12 L 60 32 Z" fill="none" stroke="#ffffff" stroke-width="1.2" opacity="0.75"/>
+          <g transform="skewX(-14) translate(20 0)" font-family="Impact, 'Barlow Condensed', Arial Black, sans-serif" font-weight="900" font-size="92" letter-spacing="-1">
+            <text x="20" y="92" fill="url(#footerLogoFill)" stroke="#0e1a33" stroke-width="4" paint-order="stroke fill">HEJS.DK</text>
+            <text x="20" y="92" fill="none" stroke="#ffffff" stroke-width="1.4" opacity="0.85">HEJS.DK</text>
+          </g>
+        </svg>
+      </div>
+      <p>Hejs.dk tilbyder alt inden for udlejning, service og reparationer af løfte- og hejseudstyr til byggebranchen.</p>
+      <div class="iso-badge" aria-label="ISO 9001 Certified">
+        <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+          <text x="60" y="32" text-anchor="middle" font-family="Arial Black, sans-serif" font-weight="900" font-size="15" fill="#1b2746">ISO 9001</text>
+          <g transform="translate(60 64)">
+            <text text-anchor="middle" y="0" font-family="Arial Black, sans-serif" font-weight="900" font-size="22" fill="#c8102e">B</text>
+            <text text-anchor="middle" x="14" y="0" font-family="Arial Black, sans-serif" font-weight="900" font-size="22" fill="#1b2746">I</text>
+          </g>
+          <path d="M 25 78 Q 60 100 95 78" fill="none" stroke="#1b2746" stroke-width="1.5"/>
+          <text x="60" y="98" text-anchor="middle" font-family="Arial, sans-serif" font-weight="700" font-size="10" letter-spacing="2" fill="#1b2746">CERTIFIED</text>
+          <path d="M 60 18 Q 18 60 60 105 Q 102 60 60 18" fill="none" stroke="#1b2746" stroke-width="1" opacity="0.4"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4>Vi tilbyder</h4>
+      <ul class="footer-links">
+        <li><a href="#">Person- og materialehejs</a></li>
+        <li><a href="#">Transportplatforme</a></li>
+        <li><a href="#">Materialehejs</a></li>
+        <li><a href="#">Wirehejs og Stigehejs</a></li>
+        <li><a href="#">Service og reparation</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Om os</h4>
+      <ul class="footer-links">
+        <li><a href="#">Om Hejs.dk</a></li>
+        <li><a href="#">Referencer</a></li>
+        <li><a href="#">Certificeringer</a></li>
+        <li><a href="#">Lejebetingelser</a></li>
+        <li><a href="#">Privatlivspolitik</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col footer-contact">
+      <h4>Kontaktinformation</h4>
+      <div class="footer-phone">
+        <span class="ph-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 15.5c-1.25 0-2.45-.2-3.57-.57a1 1 0 0 0-1.02.24l-2.2 2.2a15.05 15.05 0 0 1-6.59-6.59l2.2-2.2a1 1 0 0 0 .25-1.02A11.36 11.36 0 0 1 8.5 4a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1c0 9.39 7.61 17 17 17a1 1 0 0 0 1-1v-3.5a1 1 0 0 0-1-1z"/></svg></span>
+        <a href="tel:+4553737200">+45 53 73 72 00</a>
+      </div>
+      <p><a href="mailto:hejs@hejs.dk">hejs@hejs.dk</a></p>
+      <p>Faktura sendes til <a href="mailto:faktura@hejs.dk">faktura@hejs.dk</a></p>
+      <p>CVR: 34575533</p>
+      <div class="contact-block">
+        <p>Sjælland (hovedkontor):<br/><strong>Hammerholmen 33, 2650 Hvidovre</strong></p>
+        <p>Jylland<br/><strong>Viborg Hovedvej 21, 7100 Vejle</strong></p>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© HEJS.DK — 2026</span>
+    <span>AF: <a href="#">AVEO.DK</a> — WEB&amp;MARKETING</span>
+  </div>
 </footer>
 
 <script>
@@ -1266,7 +1628,10 @@
   const eduText = document.getElementById('eduText');
 
   // ============ PRICE LOGIC ============
-  const BASE_MONTHLY = 8000; // baseline monthly rent before cargo add-on
+  const BASE_MONTHLY = 8000;
+  const RANGE_LOW = 0.88;   // -12%
+  const RANGE_HIGH = 1.18;  // +18%
+  const roundTo = (n, step) => Math.round(n / step) * step;
 
   function calcSetup() {
     let setup = 10000 + (state.height * 400);
@@ -1284,11 +1649,17 @@
     return { monthly: monthly * (1 - discount), discount };
   }
 
+  function rangeHTML(value, unit) {
+    const low = roundTo(value * RANGE_LOW, 500);
+    const high = roundTo(value * RANGE_HIGH, 500);
+    return `${fmt(low)} – ${fmt(high)}<small> ${unit}</small>`;
+  }
+
   function updatePrices() {
-    setupPriceEl.innerHTML = `${fmt(calcSetup())}<small> kr.</small>`;
+    setupPriceEl.innerHTML = rangeHTML(calcSetup(), 'kr.');
     if (state.cargo) {
       const { monthly, discount } = calcMonthly();
-      monthlyPriceEl.innerHTML = `${fmt(monthly)}<small> kr./md.</small>`;
+      monthlyPriceEl.innerHTML = rangeHTML(monthly, 'kr./md.');
       discountNote.textContent = discount > 0
         ? `Volumenrabat: –${Math.round(discount * 100)}% (${state.months} mdr.)`
         : '';
@@ -1456,6 +1827,7 @@
       updateSummary();
       updateEdu();
       canProceed();
+      setTimeout(() => showEduPopup(), 240);
     });
   });
 
@@ -1471,7 +1843,49 @@
       updateSummary();
       updateEdu();
       canProceed();
+      setTimeout(() => showEduPopup(), 240);
     });
+  });
+
+  // ============ EDU POPUP ============
+  const eduPopupBg = document.getElementById('eduPopupBg');
+  const eduPopup = document.getElementById('eduPopup');
+  const popTitle = document.getElementById('popTitle');
+  const popText = document.getElementById('popText');
+  const popEyebrow = document.getElementById('popEyebrow');
+
+  function showEduPopup() {
+    const isAlert = eduBox.classList.contains('alert');
+    eduPopup.classList.toggle('alert', isAlert);
+    popEyebrow.textContent = isAlert ? 'Vigtigt at vide' : 'Godt at vide';
+    popTitle.textContent = document.getElementById('eduTitle').textContent;
+    popText.textContent = document.getElementById('eduText').textContent;
+    eduPopupBg.classList.add('show');
+  }
+  function closeEduPopup() { eduPopupBg.classList.remove('show'); }
+
+  document.getElementById('eduPopupClose').addEventListener('click', closeEduPopup);
+  document.getElementById('popContinue').addEventListener('click', () => {
+    closeEduPopup();
+    if (!nextBtn.disabled && state.step < 4) {
+      setTimeout(() => nextBtn.click(), 180);
+    }
+  });
+  eduPopupBg.addEventListener('click', e => { if (e.target === eduPopupBg) closeEduPopup(); });
+  eduBox.addEventListener('click', showEduPopup);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeEduPopup(); });
+
+  // Trigger popup for slider thresholds (step 1 crosses 15m, step 4 crosses discount tiers)
+  let lastHeightTier = state.height >= 15 ? 'high' : 'low';
+  heightSlider.addEventListener('change', () => {
+    const tier = state.height >= 15 ? 'high' : 'low';
+    if (tier !== lastHeightTier) { lastHeightTier = tier; showEduPopup(); }
+  });
+  let lastMonthsTier = -1;
+  monthsSlider.addEventListener('change', () => {
+    const tier = state.months >= 7 ? 2 : (state.months >= 4 ? 1 : 0);
+    if (tier !== lastMonthsTier && lastMonthsTier !== -1) { showEduPopup(); }
+    lastMonthsTier = tier;
   });
 
   // ============ RESULT ============
@@ -1507,11 +1921,16 @@
     const setup = calcSetup();
     const { monthly, discount } = calcMonthly();
 
-    document.getElementById('resSetup').innerHTML = `${fmt(setup)}<small> kr.</small>`;
-    document.getElementById('resMonthly').innerHTML = `${fmt(monthly)}<small> kr./md.</small>`;
+    document.getElementById('resSetup').innerHTML = rangeHTML(setup, 'kr.');
+    document.getElementById('resMonthly').innerHTML = rangeHTML(monthly, 'kr./md.');
     document.getElementById('resMonthlyNote').textContent = discount > 0
-      ? `Inkluderer ${Math.round(discount * 100)}% volumenrabat på baggrund af ${state.months} måneders leje.`
-      : 'Inkl. service, fjernovervågning og 24/7 teknisk support.';
+      ? `Inkluderer ${Math.round(discount * 100)}% volumenrabat (${state.months} mdr.). Endelig pris justeres efter lokation og tilkørselsforhold.`
+      : 'Inkl. service, fjernovervågning og 24/7 teknisk support. Endelig pris justeres efter lokation og tilkørselsforhold.';
+
+    const setupLow = roundTo(setup * RANGE_LOW, 500);
+    const setupHigh = roundTo(setup * RANGE_HIGH, 500);
+    const monthlyLow = roundTo(monthly * RANGE_LOW, 500);
+    const monthlyHigh = roundTo(monthly * RANGE_HIGH, 500);
 
     const list = document.getElementById('breakdownList');
     list.innerHTML = '';
@@ -1519,12 +1938,12 @@
       ['Grundpris (etablering)', '10.000 kr.'],
       [`Løftehøjde (${state.height} m × 400 kr.)`, `${fmt(state.height * 400)} kr.`],
       [`Montagetillæg (${state.mount.label})`, `${fmt(state.mount.cost)} kr.`],
-      ['— Etablering i alt', `${fmt(setup)} kr.`],
+      ['— Etablering, prisramme', `${fmt(setupLow)} – ${fmt(setupHigh)} kr.`],
       [`Månedlig baseleje`, `${fmt(BASE_MONTHLY)} kr./md.`],
       [`Transporttillæg (${state.cargo.label})`, `${fmt(state.cargo.cost)} kr./md.`],
     ];
     if (discount > 0) rows.push([`Volumenrabat (${state.months} mdr.)`, `–${Math.round(discount * 100)}%`]);
-    rows.push(['— Månedlig leje i alt', `${fmt(monthly)} kr./md.`]);
+    rows.push(['— Månedlig leje, prisramme', `${fmt(monthlyLow)} – ${fmt(monthlyHigh)} kr./md.`]);
 
     rows.forEach(([l, r]) => {
       const li = document.createElement('li');
